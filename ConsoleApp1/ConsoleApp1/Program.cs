@@ -17,6 +17,7 @@ namespace ConsoleApp1
             graph.PrintArray();
             Console.ReadLine();
             graph.Algoritm(0, 13);
+            Console.WriteLine("проверка");
         }
     }
     internal class Graph
