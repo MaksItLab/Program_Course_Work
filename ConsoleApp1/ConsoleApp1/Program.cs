@@ -64,7 +64,7 @@ namespace ConsoleApp1
                 for (int j = 0; j < arrayString.Length; j++)
                 {
                     int prob = int.Parse(arrayString[j]);
-                    _array[i][j].Add(new List<int> { prob });//Заполнение листа из матрицы
+                    _array.Add(new List<List<List<int>>> { new List<List<int>> { new List<int>} });//Заполнение листа из матрицы
                 }
             }
         }
