@@ -17,22 +17,26 @@ namespace ConsoleApp1
             graph.PrintArray();
             Console.ReadLine();
             graph.Algoritm(0, 13);
-            Console.WriteLine("проверка");
+            graph.PrintArray();
+            Console.ReadLine();
         }
     }
     internal class Graph
     {
-        private int[,] _array;
         private int _columns;
         private int _lines;
-        private List<List<int>> _graph;
-        private List<int> _path;
-        private List<int> _connectedVertices;
         private int _maxQ;
         private int _currentVertex;
 
+        private List<List<List<int>>> _array = new List<List<List<int>>>();
+        private List<List<int>> _graph = new List<List<int>>();
+        private List<List<int>> _vertaxs = new List<List<int>>();
+        private List<int> _path = new List<int>();
+        private List<int> _connectedVertices = new List<int>();
+        
 
-        public int[,] Array
+
+        public List<List<List<int>>> Array
         {
             get { return this._array; }
 
@@ -46,16 +50,21 @@ namespace ConsoleApp1
                 throw new FileNotFoundException();
             }
 
-            string[] arrayLines = File.ReadAllLines($"{ filename}"); //Считывание матрицы из файла
+            string[] arrayLines = File.ReadAllLines($"{filename}"); //Считывание матрицы из файла
+            for (int i = 0; i < arrayLines.Length; i++)
+            {
+                _vertaxs.Add(new List<int> { i });
+            }
             _lines = arrayLines.Length;
             _columns = arrayLines[0].Split(' ').Length;
-            _array = new int[_lines, _columns];
             for (int i = 0; i < arrayLines.Length; i++)
             {
                 string[] arrayString = arrayLines[i].Split(' ');
+                _array.Add(new List<List<int>>());
                 for (int j = 0; j < arrayString.Length; j++)
                 {
-                    _array[i, j] = int.Parse(arrayString[j]); //Заполнение массива из матрицы
+                    int prob = int.Parse(arrayString[j]);
+                    _array[i][j].Add(new List<int> { prob });//Заполнение листа из матрицы
                 }
             }
         }
@@ -66,7 +75,7 @@ namespace ConsoleApp1
             {
                 for (int j = 0; j < _columns; j++)
                 {
-                    Console.Write(_array[i, j] + " ");
+                    Console.Write(_array[i][j] + " ");
                 }
                 Console.WriteLine();
             }
@@ -83,34 +92,52 @@ namespace ConsoleApp1
                 {
                     for (int j = 0; j < _columns; j++)
                     {
-                        if (_array[i, j] >= _maxQ)
+                        for (int g = 0; g < _array[i][j].Count; g++)
                         {
-                            RibShortening(i, j);
+                            if (_array[i][j][g] >= _maxQ)
+                            {
+                                RibShortening(i, j, _maxQ);
+                            }
+
                         }
                     }
                 }
-
-
             }
         }
 
-        public void RibShortening(int vertax_line, int vertax_column)
+        public void RibShortening(int vertax_line, int vertax_column, int maximum)
         {
-            _connectedVertices.Add(vertax_line);
-            _connectedVertices.Add(vertax_column);
-            _array[vertax_line, vertax_column] = 0;
-            _array[vertax_column, vertax_line] = 0;
+            //для 2х вершин
+            //удаляем ребро
+            //добавляем вершину в лист другой вершины
+            //удаляем лист со старой вершиной
+            //копируем пути из старой вершины в новую
+            //присваиваем нули путям старой вершине
+            
+
+            //_connectedVertices.Add(vertax_line);
+            //_connectedVertices.Add(vertax_column);
+            _vertaxs[vertax_line].Append(vertax_column);
+            _vertaxs.RemoveAt(vertax_column);
+            _array[vertax_line].RemoveAt(vertax_column);
+            _array[vertax_column].RemoveAt(vertax_line);
+            _array[vertax_line].Insert(vertax_column, new List<int> { -1 });
+            _array[vertax_column].Insert(vertax_line, new List<int> { -1 });
         }
 
         public int MaxQ(int vertex)
         {
-            int max = _array[vertex, 0];
+            int max = _array[vertex][0][0];
             for (int i = 0; i < _columns; i++)
             {
-                if (_array[vertex, i] > max)
+                for (int j = 0; j < _array[vertex][i].Count; j++)
                 {
-                    max = _array[vertex, i];
+                    if (_array[vertex][i][j] > max)
+                    {
+                        max = _array[vertex][i][j];
+                    }
                 }
+                
             }
             return max;
         }
