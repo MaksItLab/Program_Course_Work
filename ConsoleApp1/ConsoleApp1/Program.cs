@@ -60,11 +60,11 @@ namespace ConsoleApp1
             for (int i = 0; i < arrayLines.Length; i++)
             {
                 string[] arrayString = arrayLines[i].Split(' ');
-                _array.Add(new List<List<int>>());
                 for (int j = 0; j < arrayString.Length; j++)
                 {
                     int prob = int.Parse(arrayString[j]);
-                    _array.Add(new List<List<List<int>>> { new List<List<int>> { new List<int>} });//Заполнение листа из матрицы
+                    _array.Add(new List<List<int>>());
+                    _array[i].Add(new List<int>() { prob});
                 }
             }
         }
